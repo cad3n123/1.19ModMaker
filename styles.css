@@ -1,0 +1,47 @@
+.input-row {
+    display: flex;
+    align-items: center;
+    margin: 2rem 0;
+}
+
+.input-group {
+    margin: 0 2rem;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    border: 0.25rem solid black;
+    border-radius: 1rem;
+    padding: 1rem;
+}
+
+.left-column {
+    flex-shrink: 0;
+    margin-right: 20px;
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+}
+
+.input-group {
+    margin-bottom: 10px;
+}
+
+.input-slot-div {
+    border: 0.25rem double black;
+    border-radius: 1rem;
+    padding: 1rem;
+    margin: 1rem;
+}
+
+.input-slot-div h2 {
+    margin-top: 0rem;
+}
+
+.input-slot-div:hover {
+    border-style: solid;
+}
