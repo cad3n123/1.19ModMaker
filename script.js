@@ -14,62 +14,75 @@ let numberOfProgressBurns;
 let loadDropdownSelect = document.getElementById("load-dropdown");
 let inputSlotInfoContainer = Array.from(document.getElementsByClassName("input-slot-info-container"))[0];
 let inputSlotInfoSections = [];
+let outputSlotInfoContainer = Array.from(document.getElementsByClassName("output-slot-info-container"))[0];
+let outputSlotInfoSections = [];
 
-class InputSlot {
-    constructor() {
+
+
+class GUIElementTemplate {
+    constructor(type) {
         this.x = 0;
         this.y = 0;
-        this.newInputSlotDiv = document.createElement("div");
-
-        this.newInputSlotDiv.setAttribute("class", "input-slot-div");
+        this.newGUIElementDiv = document.createElement("div");
     
-        this.newInputSlotHeader = document.createElement("h2");
-        this.newInputSlotHeader.innerHTML = "Input Slot";
+        this.newGUIElementHeader = document.createElement("h2");
+        this.newGUIElementHeader.innerHTML = type + " Slot";
     
-        this.newInputSlotXLabel = document.createElement("label");
-        this.newInputSlotXLabel.innerHTML = "X: ";
+        this.newGUIElementXLabel = document.createElement("label");
+        this.newGUIElementXLabel.innerHTML = "X: ";
     
-        this.newInputSlotXInput = document.createElement("input");
-        this.newInputSlotXInput.setAttribute("type", "number");
-        this.newInputSlotXInput.value = 0;
-        this.newInputSlotXInput.addEventListener("change", () => {
-            this.x = this.newInputSlotXInput.value;
+        this.newGUIElementXInput = document.createElement("input");
+        this.newGUIElementXInput.setAttribute("type", "number");
+        this.newGUIElementXInput.value = 0;
+        this.newGUIElementXInput.addEventListener("change", () => {
+            this.x = this.newGUIElementXInput.value;
         })
     
-        this.newInputSlotYLabel = document.createElement("label");
-        this.newInputSlotYLabel.innerHTML = "Y: ";
+        this.newGUIElementYLabel = document.createElement("label");
+        this.newGUIElementYLabel.innerHTML = "Y: ";
     
-        this.newInputSlotYInput = document.createElement("input");
-        this.newInputSlotYInput.setAttribute("type", "number");
-        this.newInputSlotYInput.value = 0;
-        this.newInputSlotYInput.addEventListener("change", () => {
-            this.y = this.newInputSlotYInput.value;
+        this.newGUIElementYInput = document.createElement("input");
+        this.newGUIElementYInput.setAttribute("type", "number");
+        this.newGUIElementYInput.value = 0;
+        this.newGUIElementYInput.addEventListener("change", () => {
+            this.y = this.newGUIElementYInput.value;
         })
         
         
-        this.newInputSlotDiv.appendChild(this.newInputSlotHeader);
-        this.newInputSlotDiv.appendChild(this.newInputSlotXLabel);
-        this.newInputSlotDiv.appendChild(this.newInputSlotXInput);
-        this.newInputSlotDiv.appendChild(this.newInputSlotYLabel);
-        this.newInputSlotDiv.appendChild(this.newInputSlotYInput);
+        this.newGUIElementDiv.appendChild(this.newGUIElementHeader);
+        this.newGUIElementDiv.appendChild(this.newGUIElementXLabel);
+        this.newGUIElementDiv.appendChild(this.newGUIElementXInput);
+        this.newGUIElementDiv.appendChild(this.newGUIElementYLabel);
+        this.newGUIElementDiv.appendChild(this.newGUIElementYInput);
     }
 
     setX(x) {
         this.x = x;
-        this.newInputSlotXInput.value = x;
+        this.newGUIElementXInput.value = x;
     }
     setY(y) {
         this.y = y;
-        this.newInputSlotYInput.value = y;
+        this.newGUIElementYInput.value = y;
     }
     setXY(x, y) {
         this.x = x;
         this.y = y;
-        this.newInputSlotXInput.value = x;
-        this.newInputSlotYInput.value = y;
+        this.newGUIElementXInput.value = x;
+        this.newGUIElementYInput.value = y;
     }
 }
 
+class InputSlot extends GUIElementTemplate {
+    constructor() {
+        super("Input");
+    }
+}
+
+class OutputSlot extends GUIElementTemplate {
+    constructor() {
+        super("Output");
+    }
+}
 window.onload = () => {
     updateLoadDropdown()
 }
@@ -113,7 +126,8 @@ document.getElementById("save-button").addEventListener("click", function() {
             numberOfOutputSlots: numberOfOutputSlotsInput.value,
             numberOfProgressArrows: numberOfProgressArrowsInput.value,
             numberOfProgressBurns: numberOfProgressBurnsInput.value,
-            inputSlotInfoSections: inputSlotInfoSections
+            inputSlotInfoSections: inputSlotInfoSections,
+            outputSlotInfoSections: outputSlotInfoSections
         }
         let saveNameExists = false;
         let index = 0;
@@ -158,10 +172,12 @@ document.getElementById("load-button").addEventListener("click", function() {
             numberOfProgressArrowsInput.value = existingSave.numberOfProgressArrows;
             numberOfProgressBurnsInput.value = existingSave.numberOfProgressBurns;
             inputSlotInfoSections = existingSave.inputSlotInfoSections;
-            console.log(existingSave.inputSlotInfoSections);
+            outputSlotInfoSections = existingSave.outputSlotInfoSections;
 
             numberOfInputSlots = numberOfInputSlotsInput.value;
+            numberOfOutputSlots = numberOfOutputSlotsInput.value;
             loadInputSlotAmount();
+            loadOutputSlotAmount();
         }
     });
 
@@ -191,6 +207,10 @@ numberOfInputSlotsInput.addEventListener("change", () => {
     updateInputSlotAmount();
 })
 
+numberOfOutputSlotsInput.addEventListener("change", () => {
+    numberOfOutputSlots = numberOfOutputSlotsInput.value;
+    updateOutputSlotAmount();
+})
 
 function updateInputSlotAmount() {
     Array.from(inputSlotInfoContainer.childNodes).forEach(childElement => {
@@ -211,9 +231,13 @@ function updateInputSlotAmount() {
 
     console.log("inputSlotInfoSections: ");
     console.log(inputSlotInfoSections);
+    let newGUIElementSlotInfoSections = [];
     inputSlotInfoSections.forEach(inputSlot => {
-        console.log(inputSlot);
-        inputSlotInfoContainer.appendChild(inputSlot.newInputSlotDiv);
+        let newGUIElementSlot = new InputSlot();
+
+        newGUIElementSlot.setXY(inputSlot.x, inputSlot.y)
+        newGUIElementSlotInfoSections.push(newGUIElementSlot);
+        inputSlotInfoContainer.appendChild(newGUIElementSlot.newGUIElementDiv);
     });
 }
 
@@ -222,16 +246,58 @@ function loadInputSlotAmount() {
         childElement.remove();
     })
 
-    let newInputSlotInfoSections = [];
+    let newGUIElementSlotInfoSections = [];
 
     inputSlotInfoSections.forEach(inputSlot => {
-        let newInputSlot = new InputSlot();
+        let newGUIElementSlot = new InputSlot();
 
-        console.log("X being added: " + inputSlot.x);
-
-        newInputSlot.setXY(inputSlot.x, inputSlot.y)
-        newInputSlotInfoSections.push(newInputSlot);
-        inputSlotInfoContainer.appendChild(newInputSlot.newInputSlotDiv);
+        newGUIElementSlot.setXY(inputSlot.x, inputSlot.y)
+        newGUIElementSlotInfoSections.push(newGUIElementSlot);
+        inputSlotInfoContainer.appendChild(newGUIElementSlot.newGUIElementDiv);
     });
-    inputSlotInfoSections = newInputSlotInfoSections
+    inputSlotInfoSections = newGUIElementSlotInfoSections
+}
+
+function updateOutputSlotAmount() {
+    Array.from(outputSlotInfoContainer.childNodes).forEach(childElement => {
+        childElement.remove();
+    })
+
+    if (numberOfOutputSlots > outputSlotInfoSections.length) {
+        let difference = numberOfOutputSlots - outputSlotInfoSections.length;
+        for (let index = 0; index < difference; index++) {
+            outputSlotInfoSections.push(new OutputSlot());
+        }
+    } else if (numberOfOutputSlots < outputSlotInfoSections.length) {
+        let difference = outputSlotInfoSections.length - numberOfOutputSlots;
+        for (let index = 0; index < difference; index++) {
+            outputSlotInfoSections.pop();
+        }
+    }
+    let newGUIElementSlotInfoSections = [];
+
+    outputSlotInfoSections.forEach(outputSlot => {
+        let newGUIElementSlot = new OutputSlot();
+
+        newGUIElementSlot.setXY(outputSlot.x, outputSlot.y)
+        newGUIElementSlotInfoSections.push(newGUIElementSlot);
+        outputSlotInfoContainer.appendChild(newGUIElementSlot.newGUIElementDiv);
+    });
+}
+
+function loadOutputSlotAmount() {
+    Array.from(outputSlotInfoContainer.childNodes).forEach(childElement => {
+        childElement.remove();
+    })
+
+    let newGUIElementSlotInfoSections = [];
+
+    outputSlotInfoSections.forEach(outputSlot => {
+        let newGUIElementSlot = new OutputSlot();
+
+        newGUIElementSlot.setXY(outputSlot.x, outputSlot.y)
+        newGUIElementSlotInfoSections.push(newGUIElementSlot);
+        outputSlotInfoContainer.appendChild(newGUIElementSlot.newGUIElementDiv);
+    });
+    outputSlotInfoSections = newGUIElementSlotInfoSections
 }

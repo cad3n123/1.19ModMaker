@@ -1,3 +1,9 @@
+/* Dark mode */
+body {
+    background-color: #121212;
+    color: #fff;
+}
+
 .input-row {
     display: flex;
     align-items: center;
@@ -11,9 +17,10 @@
 .container {
     display: flex;
     align-items: center;
-    border: 0.25rem solid black;
+    border: 0.25rem solid #fff;
     border-radius: 1rem;
     padding: 1rem;
+    background-color: #1f1f1f;
 }
 
 .left-column {
@@ -32,10 +39,11 @@
 }
 
 .input-slot-div {
-    border: 0.25rem double black;
+    border: 0.25rem double #fff;
     border-radius: 1rem;
     padding: 1rem;
-    margin: 1rem;
+    margin-top: 1rem;
+    background-color: #1f1f1f;
 }
 
 .input-slot-div h2 {
@@ -44,4 +52,28 @@
 
 .input-slot-div:hover {
     border-style: solid;
+}
+
+#gui-container-container div h2 {
+    margin-top: 0rem;
+}
+
+#gui-container-container * div {
+    border: 0.25rem double #fff;
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-top: 1rem;
+    background-color: #1f1f1f;
+}
+
+#gui-container-container * div:hover {
+    border-style: solid;
+}
+
+#gui-container-container * input {
+    margin-right: 1.5rem;
+}
+
+.gui-info-image {
+    position: absolute;
 }
