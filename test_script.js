@@ -244,7 +244,52 @@ class GUIInputInfo extends GUIInfo {
         this.GUIInfoImage.setAttribute("src", "images/" + this.type.toLowerCase() + "_slot.png");
         this.GUIInfoImage.setAttribute("class", "gui-info-image");
         this.GUIInfoImage.style.left = (emptyGUIX + (this.startX) * 2) + "px";
-        this.GUIInfoImage.style.top = (0 + emptyGUIY + (this.startY) * 2) + "px";
+        this.GUIInfoImage.style.top = (-1 + emptyGUIY + (this.startY) * 2) + "px";
+        return this.GUIInfoImage;
+    }
+
+    create() {
+        let div = this.defaultCreate();
+        div.appendChild(this.newGUIInfoImage());
+        
+        return div;
+    }
+
+    setStartX(x) {
+        this.startX = x;
+        this.GUIInfoStartXInput.value = x;
+        this.GUIInfoImage.style.left = (emptyGUIX + (this.startX) * 2) + "px";
+    }
+
+    setStartY(y) {
+        this.startY = y;
+        this.GUIInfoStartYInput.value = y;
+        this.GUIInfoImage.style.top = (-1 + emptyGUIY + (this.startY) * 2) + "px";
+    }
+
+    setStartXY(x, y) {
+        this.startX = x;
+        this.GUIInfoStartXInput.value = x;
+        this.GUIInfoImage.style.left = (emptyGUIX + (this.startX) * 2) + "px";
+
+        this.startY = y;
+        this.GUIInfoStartYInput.value = y;
+        this.GUIInfoImage.style.top = (-1 + emptyGUIY + (this.startY) * 2) + "px";
+    }
+}
+
+class GUIOutputInfo extends GUIInfo {
+    constructor() {
+        super("output");
+        this.GUIInfoImage;
+    }
+
+    newGUIInfoImage() {
+        this.GUIInfoImage = document.createElement("img");
+        this.GUIInfoImage.setAttribute("src", "images/" + this.type.toLowerCase() + "_slot.png");
+        this.GUIInfoImage.setAttribute("class", "gui-info-image");
+        this.GUIInfoImage.style.left = (emptyGUIX + (this.startX) * 2) + "px";
+        this.GUIInfoImage.style.top = (-1 + emptyGUIY + (this.startY) * 2) + "px";
         return this.GUIInfoImage;
     }
 
@@ -263,7 +308,7 @@ class GUIInputInfo extends GUIInfo {
     setStartY(y) {
         this.startY = y;
         this.GUIInfoStartYInput.value = y;
-        this.GUIInfoImage.style.top = (emptyGUIY + (this.startY) * 2) + "px";
+        this.GUIInfoImage.style.top = (-1 + emptyGUIY + (this.startY) * 2) + "px";
     }
 
     setStartXY(x, y) {
@@ -273,35 +318,127 @@ class GUIInputInfo extends GUIInfo {
 
         this.startY = y;
         this.GUIInfoStartYInput.value = y;
-        this.GUIInfoImage.style.top = (emptyGUIY + (this.startY) * 2) + "px";
+        this.GUIInfoImage.style.top = (-1 + emptyGUIY + (this.startY) * 2) + "px";
     }
 }
 
-class GUIOutputInfo extends GUIInfo {
+class GUIProgressArrowInfo extends GUIInfo {
     constructor() {
-        super("output");
-        this.GUIInfoImage;
+        super("progress-arrow");
+        this.GUIInfoStartImages = [];
+        this.GUIInfoStartImageLength = 1;
+        this.GUIInfoEndImage;
     }
 
-    newGUIInfoImage() {
-        this.GUIInfoImage = document.createElement("img");
-        this.GUIInfoImage.setAttribute("src", "images/" + this.type.toLowerCase() + "_slot.png");
-        this.GUIInfoImage.setAttribute("class", "gui-info-image");
-        this.GUIInfoImage.style.left = (emptyGUIX + (this.startX - 4) * 2) + "px";
-        this.GUIInfoImage.style.top = (emptyGUIY + (this.startY - 4) * 2) + "px";
-        return this.GUIInfoImage;
+    newGUIInfoLengthLabel() {
+        this.GUIInfoLengthLabel = document.createElement("label");
+        this.GUIInfoLengthLabel.innerHTML = "Length: ";
+        return this.GUIInfoLengthLabel;
+    }
+    newGUIInfoLengthInput() {
+        this.GUIInfoLengthInput = document.createElement("input");
+        this.GUIInfoLengthInput.setAttribute("type", "number");
+        this.GUIInfoLengthInput.value = 1;
+        this.GUIInfoLengthInput.addEventListener("change", () => {
+            this.setLength(this.GUIInfoLengthInput.value);
+        })
+        return this.GUIInfoLengthInput;
+    }
+
+    newGUIInfoStartImages() {
+        let firstX = 0;
+        let firstY = 0;
+        for (let index = 0; index < this.GUIInfoStartImageLength; index++) {
+
+            let GUIInfoImage = document.createElement("img");
+            GUIInfoImage.setAttribute("src", "images/" + this.type.toLowerCase() + "-horizontal-start.png");
+            GUIInfoImage.setAttribute("class", "gui-info-image");
+            
+            GUIInfoImage.style.left = (emptyGUIX + firstX + this.startX * 2) + "px";
+            GUIInfoImage.style.top = (-1 + emptyGUIY + firstY + this.startY * 2) + "px";
+
+            this.GUIInfoStartImages.push(GUIInfoImage);
+            GUIInfoImage = undefined;
+
+            firstX++;
+        }
+
+        return this.GUIInfoStartImages;
     }
 
     create() {
         let div = this.defaultCreate();
-        div.appendChild(this.newGUIInfoImage());
+        div.appendChild(this.newGUIInfoLengthLabel());
+        div.appendChild(this.newGUIInfoLengthInput());
+
+        let startImages = this.newGUIInfoStartImages();
+        console.log(startImages);
+        startImages.forEach(startImage => {
+            console.log(startImage);
+            div.appendChild(startImage);
+        });
+
+        return div;
+    }
+
+    setStartX(x) {
+        this.startX = x;
+        let firstX = x;
+        this.GUIInfoStartImages.forEach(startImage => {
+            startImage.style.left = (emptyGUIX + (firstX) * 2) + "px";
+            firstX++;
+        })
+    }
+
+    setStartY(y) {
+        this.startY = y;
+        let firstY = y;
+        this.GUIInfoStartImages.forEach(startImage => {
+            startImage.style.top = (emptyGUIY + (firstY) * 2) + "px";
+        })
+    }
+
+    setStartXY(x, y) {
+        this.startX = x;
+        let firstX = x;
+        this.GUIInfoStartImages.forEach(startImage => {
+            startImage.style.left = (emptyGUIX + (firstX) * 2) + "px";
+            firstX++;
+        })
+
+        this.startY = y;
+        let firstY = y;
+        this.GUIInfoStartImages.forEach(startImage => {
+            startImage.style.top = (emptyGUIY + (firstY) * 2) + "px";
+            firstY++;
+        })
+    }
+
+    setLength(length) {
+
+        this.GUIInfoStartImages.forEach(startImage => {
+            startImage.remove();
+        })
+
+        this.GUIInfoStartImages = []
+
+        this.GUIInfoStartImageLength = length;
+
+        let div = this.GUIInfoDiv;
+        let startImages = this.newGUIInfoStartImages();
+        console.log(startImages);
+        startImages.forEach(startImage => {
+            console.log(startImage);
+            div.appendChild(startImage);
+        });
+
         return div;
     }
 }
 
 let inputSlotInfoContainer = new GUIInputContainer();
 let outputSlotInfoContainer = new GUIOutputContainer();
-let progressArrowInfoContainer = new GUIContainer("progress-arrow");
+let progressArrowInfoContainer = new GUIProgressArrowContainer();
 let progressBurnInfoContainer = new GUIContainer("progress-burn");
 
 GUIContainerContainerDiv.appendChild(inputSlotInfoContainer.GUIContainerDiv);
