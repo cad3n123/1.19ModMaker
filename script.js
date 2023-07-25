@@ -23,6 +23,7 @@ class GUIElementTemplate {
     constructor(type) {
         this.x = 0;
         this.y = 0;
+        
         this.newGUIElementDiv = document.createElement("div");
     
         this.newGUIElementHeader = document.createElement("h2");

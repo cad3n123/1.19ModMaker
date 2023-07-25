@@ -17,8 +17,8 @@ let numberOfProgressBurns;
 let loadDropdownSelect = document.getElementById("load-dropdown");
 let GUIContainerContainerDiv = document.getElementById("gui-container-container");
 let emptyGUI = document.getElementById("empty-gui");
-let emptyGUIX = emptyGUI.getBoundingClientRect().x - (emptyGUI.clientWidth)/2;
-let emptyGUIY = emptyGUI.getBoundingClientRect().y - (emptyGUI.clientHeight)/2;
+let emptyGUIX = emptyGUI.getBoundingClientRect().x;
+let emptyGUIY = emptyGUI.getBoundingClientRect().y;
 
 class GUIContainer {
     constructor(GUIInfoType) {
@@ -28,13 +28,19 @@ class GUIContainer {
         this.GUIContainerDiv.setAttribute("id", (GUIInfoType.toLowerCase()) + "-info-container");
     }
 
+    newGUIInfo() {
+        return new GUIInfo(this.GUIInfoType);
+    }
+
     loadGUIInfoElements(newTotal) {
         Array.from(this.GUIContainerDiv.childNodes).forEach(childElement => {
             childElement.remove();
         })
 
         while (newTotal > this.GUIInfoElements.length) {
-            this.GUIInfoElements.push(new GUIInfo(this.GUIInfoType).newGUIInfoDiv);
+            let thisGUIInfo = this.newGUIInfo();
+            thisGUIInfo.create();
+            this.GUIInfoElements.push(thisGUIInfo.GUIInfoDiv);
         }
         while (newTotal < this.GUIInfoElements.length) {
             this.GUIInfoElements.pop();
@@ -46,13 +52,105 @@ class GUIContainer {
     }
 }
 
+class GUIInputContainer extends GUIContainer {
+    constructor() {
+        super("input");
+    }
+
+    newGUIInfo = function() {
+        return new GUIInputInfo();
+    }
+}
+class GUIOutputContainer extends GUIContainer {
+    constructor() {
+        super("output");
+    }
+
+    newGUIInfo = function() {
+        return new GUIOutputInfo();
+    }
+}
+class GUIProgressArrowContainer extends GUIContainer {
+    constructor() {
+        super("progress-arrow");
+    }
+
+    newGUIInfo = function() {
+        return new GUIProgressArrowInfo();
+    }
+}
+class GUIProgressBurnContainer extends GUIContainer {
+    constructor() {
+        super("progress-burn");
+    }
+
+    newGUIInfo = function() {
+        return new GUIProgressBurnInfo();
+    }
+}
+
 class GUIInfo {
     constructor(type) {
         this.type = type;
 
         this.startX = 0;
         this.startY = 0;
+        this.GUIInfoDiv;
+        this.GUIInfoHeader;
+        this.GUIInfoStartXLabel;
+        this.GUIInfoStartXInput;
+        this.GUIInfoStartYLabel;
+        this.GUIInfoStartYInput;
+    }
 
+    newGUIInfoDiv() {
+        this.GUIInfoDiv = document.createElement("div");
+        return this.GUIInfoDiv;
+    }
+    newGUIInfoHeader() {
+        this.GUIInfoHeader = document.createElement("h2");
+        this.GUIInfoHeader.innerHTML = this.type.charAt(0).toUpperCase() + this.type.slice(1 - this.type.length).toLowerCase() + " Slot";
+        return this.GUIInfoHeader;
+    }
+    newGUIInfoStartXLabel() {
+        this.GUIInfoStartXLabel = document.createElement("label");
+        this.GUIInfoStartXLabel.innerHTML = "Start X: ";
+        return this.GUIInfoStartXLabel;
+    }
+    newGUIInfoStartXInput() {
+        this.GUIInfoStartXInput = document.createElement("input");
+        this.GUIInfoStartXInput.setAttribute("type", "number");
+        this.GUIInfoStartXInput.value = 0;
+        this.GUIInfoStartXInput.addEventListener("change", () => {
+            this.setStartX(this.GUIInfoStartXInput.value);
+        })
+        return this.GUIInfoStartXInput;
+    }
+    newGUIInfoStartYLabel() {
+        this.GUIInfoStartYLabel = document.createElement("label");
+        this.GUIInfoStartYLabel.innerHTML = "Start Y: ";
+        return this.GUIInfoStartYLabel;
+    }
+    newGUIInfoStartYInput() {
+        this.GUIInfoStartYInput = document.createElement("input");
+        this.GUIInfoStartYInput.setAttribute("type", "number");
+        this.GUIInfoStartYInput.value = 0;
+        this.GUIInfoStartYInput.addEventListener("change", () => {
+            this.setStartY(this.GUIInfoStartYInput.value);
+        })
+        return this.GUIInfoStartYInput;
+    }
+    defaultCreate() {
+        this.newGUIInfoDiv();
+        this.GUIInfoDiv.appendChild(this.newGUIInfoHeader());
+        this.GUIInfoDiv.appendChild(this.newGUIInfoStartXLabel());
+        this.GUIInfoDiv.appendChild(this.newGUIInfoStartXInput());
+        this.GUIInfoDiv.appendChild(this.newGUIInfoStartYLabel());
+        this.GUIInfoDiv.appendChild(this.newGUIInfoStartYInput());
+        return this.GUIInfoDiv;
+    }
+
+        /*
         this.newGUIInfoDiv = document.createElement("div");
     
         this.newGUIInfoHeader = document.createElement("h2");
@@ -108,11 +206,6 @@ class GUIInfo {
             this.newGUIInfoImage.style.y = emptyGUIY + (this.startY - (this.type.toLowerCase() == "input" ? 1 : 4)) * 2;
         }
 
-        this.newGUIInfoDiv.appendChild(this.newGUIInfoHeader);
-        this.newGUIInfoDiv.appendChild(this.newGUIInfoStartXLabel);
-        this.newGUIInfoDiv.appendChild(this.newGUIInfoStartXInput);
-        this.newGUIInfoDiv.appendChild(this.newGUIInfoStartYLabel);
-        this.newGUIInfoDiv.appendChild(this.newGUIInfoStartYInput);
         if(this.type.toLowerCase() == "progress-arrow" || this.type.toLowerCase() == "progress-burn") {
             this.newGUIInfoDiv.appendChild(this.newGUIInfoEndXLabel);
             this.newGUIInfoDiv.appendChild(this.newGUIInfoEndXInput);
@@ -122,26 +215,92 @@ class GUIInfo {
         if (this.type.toLowerCase() == "input" || this.type.toLowerCase() == "output") {
             container.insertBefore(this.newGUIInfoImage, leftColumn);
         }
-    }
+        */
 
-    setX(x) {
+    setStartX(x) {
         this.startX = x;
-        this.newGUIInfoStartXInput.value = x;
+        this.GUIInfoStartXInput.value = x;
     }
-    setY(y) {
+    setStartY(y) {
         this.startY = y;
-        this.newGUIInfoStartYInput.value = y;
+        this.GUIInfoStartYInput.value = y;
     }
-    setXY(x, y) {
+    setStartXY(x, y) {
         this.startX = x;
         this.startY = y;
-        this.newGUIInfoStartXInput.value = x;
-        this.newGUIInfoStartYInput.value = y;
+        this.GUIInfoStartXInput.value = x;
+        this.GUIInfoStartYInput.value = y;
     }
 }
 
-let inputSlotInfoContainer = new GUIContainer("input");
-let outputSlotInfoContainer = new GUIContainer("output");
+class GUIInputInfo extends GUIInfo {
+    constructor() {
+        super("input");
+        this.GUIInfoImage;
+    }
+
+    newGUIInfoImage() {
+        this.GUIInfoImage = document.createElement("img");
+        this.GUIInfoImage.setAttribute("src", "images/" + this.type.toLowerCase() + "_slot.png");
+        this.GUIInfoImage.setAttribute("class", "gui-info-image");
+        this.GUIInfoImage.style.left = (emptyGUIX + (this.startX) * 2) + "px";
+        this.GUIInfoImage.style.top = (0 + emptyGUIY + (this.startY) * 2) + "px";
+        return this.GUIInfoImage;
+    }
+
+    create() {
+        let div = this.defaultCreate();
+        div.appendChild(this.newGUIInfoImage());
+        return div;
+    }
+
+    setStartX(x) {
+        this.startX = x;
+        this.GUIInfoStartXInput.value = x;
+        this.GUIInfoImage.style.left = (emptyGUIX + (this.startX) * 2) + "px";
+    }
+
+    setStartY(y) {
+        this.startY = y;
+        this.GUIInfoStartYInput.value = y;
+        this.GUIInfoImage.style.top = (emptyGUIY + (this.startY) * 2) + "px";
+    }
+
+    setStartXY(x, y) {
+        this.startX = x;
+        this.GUIInfoStartXInput.value = x;
+        this.GUIInfoImage.style.left = (emptyGUIX + (this.startX) * 2) + "px";
+
+        this.startY = y;
+        this.GUIInfoStartYInput.value = y;
+        this.GUIInfoImage.style.top = (emptyGUIY + (this.startY) * 2) + "px";
+    }
+}
+
+class GUIOutputInfo extends GUIInfo {
+    constructor() {
+        super("output");
+        this.GUIInfoImage;
+    }
+
+    newGUIInfoImage() {
+        this.GUIInfoImage = document.createElement("img");
+        this.GUIInfoImage.setAttribute("src", "images/" + this.type.toLowerCase() + "_slot.png");
+        this.GUIInfoImage.setAttribute("class", "gui-info-image");
+        this.GUIInfoImage.style.left = (emptyGUIX + (this.startX - 4) * 2) + "px";
+        this.GUIInfoImage.style.top = (emptyGUIY + (this.startY - 4) * 2) + "px";
+        return this.GUIInfoImage;
+    }
+
+    create() {
+        let div = this.defaultCreate();
+        div.appendChild(this.newGUIInfoImage());
+        return div;
+    }
+}
+
+let inputSlotInfoContainer = new GUIInputContainer();
+let outputSlotInfoContainer = new GUIOutputContainer();
 let progressArrowInfoContainer = new GUIContainer("progress-arrow");
 let progressBurnInfoContainer = new GUIContainer("progress-burn");
 
