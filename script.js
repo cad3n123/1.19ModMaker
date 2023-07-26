@@ -317,19 +317,42 @@ class GUIProgressArrowInfo extends GUIInfo {
         return this.GUIInfoEndImage;
     }
 
+    newOrientationLabel() {
+        this.GUIInfoOrientationLabel = document.createElement("label");
+        this.GUIInfoOrientationLabel.innerHTML = "Arrow Orientation: ";
+
+        return this.GUIInfoOrientationLabel;
+    }
+
+    newOrientationDropdown() {
+        this.GUIInfoOrientationDropdown = document.createElement("select");
+        this.GUIInfoOrientationDropdown.setAttribute("id", "progress-arrow-orientation-dropdown");
+
+        let horizontalOption = document.createElement("option");
+        horizontalOption.innerHTML = "Horizontal";
+        let verticalOption = document.createElement("option");
+        verticalOption.innerHTML = "Vertical";
+
+        this.GUIInfoOrientationDropdown.appendChild(horizontalOption);
+        this.GUIInfoOrientationDropdown.appendChild(verticalOption);
+
+        return this.GUIInfoOrientationDropdown;
+    }
+
     create() {
         let div = this.defaultCreate();
         div.appendChild(this.newGUIInfoLengthLabel());
         div.appendChild(this.newGUIInfoLengthInput());
 
         let startImages = this.newGUIInfoStartImages();
-        console.log(startImages);
         startImages.forEach(startImage => {
-            console.log(startImage);
             div.appendChild(startImage);
         });
 
         div.appendChild(this.newGUIInfoEndImage());
+        
+        div.appendChild(this.newOrientationLabel());
+        div.appendChild(this.newOrientationDropdown());
 
         return div;
     }
