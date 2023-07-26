@@ -17,7 +17,7 @@ body {
 .container {
     display: flex;
     align-items: center;
-    border: 0.25rem solid #fff;
+    border: 0.5rem solid lightgray;
     border-radius: 1rem;
     padding: 1rem;
     background-color: #1f1f1f;
@@ -39,7 +39,7 @@ body {
 }
 
 .input-slot-div {
-    border: 0.25rem double #fff;
+    border: 0.5rem double lightgray;
     border-radius: 1rem;
     padding: 1rem;
     margin-top: 1rem;
@@ -52,6 +52,7 @@ body {
 
 .input-slot-div:hover {
     border-style: solid;
+    border-color: white;
 }
 
 #gui-container-container div h2 {
@@ -59,7 +60,7 @@ body {
 }
 
 #gui-container-container * div {
-    border: 0.25rem double #fff;
+    border: 0.5rem double gray;
     border-radius: 1rem;
     padding: 1rem;
     margin-top: 1rem;
@@ -68,6 +69,7 @@ body {
 
 #gui-container-container * div:hover {
     border-style: solid;
+    border-color: lightgray;
 }
 
 #gui-container-container * input {
