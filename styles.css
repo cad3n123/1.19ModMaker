@@ -78,9 +78,39 @@
     #gui-container-container * input {
         margin-right: 1rem;
     }
+
+    div.done-pop-up {
+        border: 1rem double black;
+        border-radius: 1rem;
+        padding: 1rem;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: lightgray;
+        min-width: 50vw;
+        min-height: 50vh;
+        max-width: 90vw;
+        max-height: 90vh;
+    }
+
+    h1.done-pop-up{
+        color: black;
+        text-align: center;
+        margin-top: 0rem;
+    }
+
+    p.done-pop-up{
+        color: black;
+    }
     
     /* DO NOT TOUCH .gui-info-image */
     .gui-info-image {
+        -webkit-user-drag: none;
+        user-select: none;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
         position: absolute;
     }
     
